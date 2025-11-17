@@ -73,18 +73,18 @@ void ListenWorker(StbModulator &_modulator, ZMQLink &_link)
         {
             // kato::log::cout << KATO_MAGENTA << "stbmodulator.h::ListenWorker() rxMessage = " << rxMessage << KATO_RESET << std::endl;
 
-            std::istringstream rxStream(rxMessage);
-            toml::value data = toml::parse(rxStream);
+            toml::value data = toml::parse(rxMessage);
             std::string sync = "";
             std::ostringstream txStream;
             std::string txMessage;
 
             try // [settings] radius = radius_value
             {
-                float radius = toml::find<float>(data, "settings", "radius");
+                float radius = data.at("settings").at("radius").as_floating();
                 kato::log::cout << KATO_GREEN << "stbmodulator.h::ListenWorker() radius = " << radius << KATO_RESET << std::endl;
                 _modulator.setRadius(radius);
-                txStream << toml::value{{"settings", toml::table{{"radius", _modulator.radius}}}} << "\n";
+                toml::value reply = toml::value{toml::table{{"settings",toml::table{{"radius", _modulator.radius}}}}};
+                txStream << reply << "\n";
                 txMessage = txStream.str();
                 _link.Send(txMessage);
                 continue;
@@ -95,12 +95,12 @@ void ListenWorker(StbModulator &_modulator, ZMQLink &_link)
 
             try // [settings.nudge] x = amount, y = amount
             {
-                toml::table nudge_table = toml::find<toml::table>(data, "settings", "nudge");
-                int nudge_x = nudge_table["x"].as_integer();
-                int nudge_y = nudge_table["y"].as_integer();
+                int nudge_x = data.at("settings").at("nudge").at("x").as_integer();
+                int nudge_y = data.at("settings").at("nudge").at("y").as_integer();
                 kato::log::cout << KATO_GREEN << "lcdmodulator.h::ListenWorker() nudge center : (" << (int)_modulator.center.x << "," << (int)_modulator.center.y << ") by (" << nudge_x << "," << nudge_y << ")" << KATO_RESET << std::endl;
                 _modulator.setCenter({_modulator.center.x + nudge_x, _modulator.center.y + nudge_y});
-                txStream << toml::value{{"settings", toml::table{{"center", {{"x", _modulator.center.x}, {"y", _modulator.center.y}}}}}} << "\n";
+                toml::value reply = toml::value{toml::table{{"settings", toml::table{{"center", toml::table{{"x", _modulator.center.x}, {"y", _modulator.center.y}}}}}}};
+                txStream << reply << "\n";
                 txMessage = txStream.str();
                 _link.Send(txMessage);
                 continue;
@@ -111,9 +111,10 @@ void ListenWorker(StbModulator &_modulator, ZMQLink &_link)
 
             try // Settings = "sync"
             {
-                sync = toml::find<std::string>(data, "settings");
-                kato::log::cout << KATO_GREEN << "stbmodulator.h::ListenWorker() syncing..." << KATO_RESET << std::endl;
-                txStream << toml::value{{"settings", toml::table{{"radius", _modulator.radius}, {"center", std::string(_modulator.center)}}}} << "\n";
+                std::string sync = data.at("settings").as_string();
+                kato::log::cout << KATO_GREEN << "lcdmodulator.h::ListenWorker() syncing..." << KATO_RESET << std::endl;
+                toml::value reply = toml::value{toml::table{{"settings", toml::table{{"radius", _modulator.radius}, {"center", toml::table{{"x", _modulator.center.x}, {"y", _modulator.center.y}}}}}}};
+                txStream << reply << "\n";
                 txMessage = txStream.str();
                 _link.Send(txMessage);
                 continue;
