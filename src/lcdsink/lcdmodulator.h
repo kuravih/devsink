@@ -122,7 +122,7 @@ struct LcdModulator
     }
     int openStream()
     {
-        if (testbed::create_modulator_memory(memory, (serial + "_" LCDSINK_STREAM_STR).c_str(), full.size(), center, max_radius, shmio::DataType::UINT16, serial.c_str(), (long)(std::pow(2, 16) - 1), port) == 0)
+        if (testbed::create_modulator_memory(memory, (serial + "_" LCDSINK_STREAM_STR).c_str(), full.size(), center, max_radius, shmio::DataType::UINT16, serial.c_str(), (std::pow(2, 16) - 1), port) == 0)
         {
             shm_radius = shmio::find_keyword(memory, "RADIUS");
             shm_radius->value.numf = radius;
@@ -173,7 +173,7 @@ void ListenWorker(LcdModulator &_modulator, ZMQLink &_link)
                 float radius = data.at("settings").at("radius").as_floating();
                 kato::log::cout << KATO_GREEN << "lcdmodulator.h::ListenWorker() radius = " << kato::function::StringPrintf("%.0f", radius) << KATO_RESET << std::endl;
                 _modulator.setRadius(radius);
-                toml::value reply = toml::value{toml::table{{"settings",toml::table{{"radius", _modulator.radius}}}}};
+                toml::value reply = toml::value{toml::table{{"settings", toml::table{{"radius", _modulator.radius}}}}};
                 txStream << reply << "\n";
                 txMessage = txStream.str();
                 _link.Send(txMessage);

@@ -32,7 +32,7 @@ struct StbModulator
     StbModulator(const char *_name, const char *_serial, long _port, const testbed::Point<float> _center, const float _radius) : name(_name), serial(_serial), full({{0, 0}, {640, 480}}), center(_center), max_radius(_radius), radius(_radius), datatype(_DATATYPE_UINT16), port(_port) {}
     int openStream()
     {
-        if (testbed::create_modulator_memory(memory, (serial + "_" STBSINK_STREAM_STR).c_str(), full.size(), center, radius, shmio::DataType::UINT16, serial.c_str(), (long)(std::pow(2, 16) - 1), port) == 0)
+        if (testbed::create_modulator_memory(memory, (serial + "_" STBSINK_STREAM_STR).c_str(), full.size(), center, radius, shmio::DataType::UINT16, serial.c_str(), (std::pow(2, 16) - 1), port) == 0)
         {
             shm_radius = shmio::find_keyword(memory, "RADIUS");
             shm_radius->value.numf = radius;
@@ -83,7 +83,7 @@ void ListenWorker(StbModulator &_modulator, ZMQLink &_link)
                 float radius = data.at("settings").at("radius").as_floating();
                 kato::log::cout << KATO_GREEN << "stbmodulator.h::ListenWorker() radius = " << radius << KATO_RESET << std::endl;
                 _modulator.setRadius(radius);
-                toml::value reply = toml::value{toml::table{{"settings",toml::table{{"radius", _modulator.radius}}}}};
+                toml::value reply = toml::value{toml::table{{"settings", toml::table{{"radius", _modulator.radius}}}}};
                 txStream << reply << "\n";
                 txMessage = txStream.str();
                 _link.Send(txMessage);

@@ -22,7 +22,7 @@ int main()
 
     kato::log::cout << KATO_GREEN << "lcdsink_main.cpp::main() Starting " LCDSINK_STR " (" LCDSINK_VERSION_STR ")" << KATO_RESET << std::endl;
 
-    // glfw::Error::SetErrorCallback(glfw_error_callback);
+    glfw::Error::SetErrorCallback(glfw_error_callback);
     std::signal(SIGINT, sigint_handler);
 
     std::thread listen_thread, sink_thread;
