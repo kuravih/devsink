@@ -1,0 +1,8 @@
+#ifndef __LCDSINK_PATH_DEF_H__
+#define __LCDSINK_PATH_DEF_H__
+
+#pragma once
+
+#define LCDSINK_SHADER_PATH "@SHADER_PATH@"
+
+#endif // __LCDSINK_PATH_DEF_H__

@@ -9,6 +9,7 @@
 #include "kato/log.hpp"
 #include "link/zmq_link.hpp"
 #include "lcdsink_def.h"
+#include "lcdsink_path_def.h"
 #include "toml11/toml.hpp"
 #include "glm/glm.hpp"
 
@@ -93,7 +94,7 @@ struct LcdModulator
 
         glViewport(0, 0, LCDSINK_WIDTH, LCDSINK_HEIGHT);
 
-        pProgram = std::make_shared<gloo::Program>(gloo::Shader(gloo::getFileContents("direct.vert"), gloo::Shader::Type::Vertex), gloo::Shader(gloo::getFileContents("direct.frag"), gloo::Shader::Type::Fragment));
+        pProgram = std::make_shared<gloo::Program>(gloo::Shader(gloo::getFileContents(LCDSINK_SHADER_PATH "/lcdsink/direct.vert"), gloo::Shader::Type::Vertex), gloo::Shader(gloo::getFileContents(LCDSINK_SHADER_PATH "/lcdsink/direct.frag"), gloo::Shader::Type::Fragment));
         pMesh = std::make_shared<gloo::Mesh>(std::vector<gloo::Vertex>(SCREEN_VERTICES), std::vector<GLuint>(SCREEN_INDICES));
         pMesh->LinkPositionToLocation(0);
         pMesh->LinkTextureUVToLocation(1);

@@ -1,4 +1,12 @@
-glfw3_dep = dependency('glfw3', static: true)
+glfw3_dep = dependency('glfw3')
+
+conf = configure_file(
+    input: 'lcdsink_path_def.h.in',
+    output: 'lcdsink_path_def.h',
+    configuration: {
+        'SHADER_PATH': meson.project_source_root()
+    }
+)
 
 lib_path = '../lib'
 lib_include = include_directories('../lib')
@@ -68,7 +76,7 @@ gloo_lib = static_library(
 testbed_inc = include_directories('../lib')
 executable(
     'lcdsink',
-    'lcdsink_main.cpp',
+    ['lcdsink_main.cpp', conf],
     include_directories : [
         glad_include,
         gloo_inc,
@@ -76,9 +84,9 @@ executable(
         testbed_inc
     ],
     dependencies : [glfw3_dep],
+    link_whole : [glfw_cxx_lib],
     link_with : [
         glad_lib,
-        glfw_cxx_lib,
         gloo_lib
     ],
     cpp_args : [
