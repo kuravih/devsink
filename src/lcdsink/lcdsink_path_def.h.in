@@ -3,6 +3,6 @@
 
 #pragma once
 
-#define LCDSINK_SHADER_PATH "@SHADER_PATH@"
+#define LCDSINK_SRC_ROOT "@SRC_ROOT@"
 
 #endif // __LCDSINK_PATH_DEF_H__

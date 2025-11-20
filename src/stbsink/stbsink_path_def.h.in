@@ -1,0 +1,8 @@
+#ifndef __STBSINK_PATH_DEF_H__
+#define __STBSINK_PATH_DEF_H__
+
+#pragma once
+
+#define STBSINK_SRC_ROOT "@SRC_ROOT@"
+
+#endif // __STBSINK_PATH_DEF_H__

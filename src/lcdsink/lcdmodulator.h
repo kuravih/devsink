@@ -94,7 +94,7 @@ struct LcdModulator
 
         glViewport(0, 0, LCDSINK_WIDTH, LCDSINK_HEIGHT);
 
-        pProgram = std::make_shared<gloo::Program>(gloo::Shader(gloo::getFileContents(LCDSINK_SHADER_PATH "/lcdsink/direct.vert"), gloo::Shader::Type::Vertex), gloo::Shader(gloo::getFileContents(LCDSINK_SHADER_PATH "/lcdsink/direct.frag"), gloo::Shader::Type::Fragment));
+        pProgram = std::make_shared<gloo::Program>(gloo::Shader(gloo::getFileContents(LCDSINK_SRC_ROOT "/lcdsink/direct.vert"), gloo::Shader::Type::Vertex), gloo::Shader(gloo::getFileContents(LCDSINK_SRC_ROOT "/lcdsink/direct.frag"), gloo::Shader::Type::Fragment));
         pMesh = std::make_shared<gloo::Mesh>(std::vector<gloo::Vertex>(SCREEN_VERTICES), std::vector<GLuint>(SCREEN_INDICES));
         pMesh->LinkPositionToLocation(0);
         pMesh->LinkTextureUVToLocation(1);
@@ -233,7 +233,7 @@ void SinkWorker(LcdModulator &_modulator)
 
         // ------------------------------------------------------------------------------------------------------------------
         int width, height, nCh;
-        uint16_t *imData = stbi_load_16("data/grid_gray16_1620_2560.png", &width, &height, &nCh, 0);
+        uint16_t *imData = stbi_load_16(LCDSINK_SRC_ROOT "/lcdsink/data/grid_gray16_1620_2560.png", &width, &height, &nCh, 0);
         for (size_t i = 0; i < (size_t)width * height * nCh; ++i)
             _modulator.display_pixels[i] = imData[i];
         stbi_image_free(imData);

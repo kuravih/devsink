@@ -4,7 +4,7 @@ conf = configure_file(
     input: 'lcdsink_path_def.h.in',
     output: 'lcdsink_path_def.h',
     configuration: {
-        'SHADER_PATH': meson.project_source_root()
+        'SRC_ROOT': meson.project_source_root()
     }
 )
 

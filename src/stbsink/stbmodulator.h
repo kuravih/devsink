@@ -9,6 +9,7 @@
 #include "kato/log.hpp"
 #include "link/zmq_link.hpp"
 #include "stbsink_def.h"
+#include "stbsink_path_def.h"
 #include "toml11/toml.hpp"
 #include "glm/glm.hpp"
 
@@ -134,8 +135,8 @@ void SinkWorker(StbModulator &_modulator)
     kato::log::cout << KATO_MAGENTA << "stbmodulator.h::SinkWorker() Source thread starting..." << KATO_RESET << std::endl;
     if (_modulator.openStream() == 0)
     {
-        kato::TrueTypeFont ttf("../lib/kato/ProggyClean.ttf", 12);
-        std::chrono::system_clock::time_point now;
+        kato::TrueTypeFont ttf(STBSINK_SRC_ROOT "/lib/kato/ProggyClean.ttf", 12);
+        std::chrono::system_clock::time_point t0, t1;
         shmio::SharedStorage *storage = shmio::get_storage_ptr(_modulator.memory);
         shmio::Keyword *framerate = shmio::find_keyword(_modulator.memory, "FRMRATE");
         std::span<uint16_t> pixels = shmio::get_pixels_as<uint16_t>(_modulator.memory);
