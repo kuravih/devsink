@@ -149,6 +149,7 @@ void SinkWorker(StbModulator &_modulator)
         kato::log::cout << KATO_MAGENTA << "stbmodulator.h::SinkWorker() - starting ..." << KATO_RESET << std::endl;
         while (busy.load())
         {
+            t0 = std::chrono::system_clock::now();
             // ---- begin critical section ----------------------------------------------------------------------------
             pthread_mutex_lock(&storage->mutex);
 
@@ -158,10 +159,10 @@ void SinkWorker(StbModulator &_modulator)
             while (!storage->ready_flag && !storage->terminate)
                 pthread_cond_wait(&storage->ready_cond, &storage->mutex);
 
-            now = std::chrono::system_clock::now();
-            framerate->value.numf = kato::function::delta_time_point_to_framerate(kato::function::timespec_to_time_point(storage->lastaccesstime), now);
-            kato::log::cout << KATO_MAGENTA << "stbmodulator.h::SinkWorker() - framerate : " << std::scientific << std::setprecision(5) << framerate->value.numf << KATO_RESET << std::flush;
-            storage->lastaccesstime = kato::function::time_point_to_timespec(now);
+            t1 = std::chrono::system_clock::now();
+            framerate->value.numf = kato::function::delta_time_point_to_framerate(t0, t1);
+            storage->lastaccesstime = kato::function::time_point_to_timespec(t1);
+            kato::log::cout << KATO_MAGENTA << "stbmodulator.h::SinkWorker() - framerate = " << std::scientific << std::setprecision(5) << framerate->value.numf << KATO_RESET << std::flush;
 
             storage->ready_flag = false;
 
