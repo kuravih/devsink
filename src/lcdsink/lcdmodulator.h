@@ -164,7 +164,7 @@ void ListenWorker(LcdModulator &_modulator, ZMQLink &_link)
         {
             // kato::log::cout << KATO_MAGENTA << "lcdmodulator.h::ListenWorker() rxMessage = " << rxMessage << KATO_RESET << std::endl;
 
-            toml::value data = toml::parse(rxMessage);
+            toml::value data = toml::parse_str(rxMessage);
             std::string sync = "";
             std::ostringstream txStream;
             std::string txMessage;
