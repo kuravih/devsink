@@ -257,7 +257,7 @@ void SinkWorker(LcdModulator &_modulator)
 
             _modulator.render_command(pixels);
 
-            while (!storage->ready_flag && !storage->terminate)
+            while (!storage->ready_flag)
                 pthread_cond_wait(&storage->ready_cond, &storage->mutex);
 
             t1 = std::chrono::system_clock::now();
@@ -277,7 +277,6 @@ void SinkWorker(LcdModulator &_modulator)
         // ---- begin critical section --------------------------------------------------------------------------------
         // Terminate shared state cleanly
         pthread_mutex_lock(&storage->mutex);
-        storage->terminate = true;
         pthread_cond_broadcast(&storage->ready_cond);
         pthread_cond_broadcast(&storage->request_cond);
         pthread_mutex_unlock(&storage->mutex);

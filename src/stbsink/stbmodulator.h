@@ -156,7 +156,7 @@ void SinkWorker(StbModulator &_modulator)
             storage->request_flag = true;
             pthread_cond_signal(&storage->request_cond);
 
-            while (!storage->ready_flag && !storage->terminate)
+            while (!storage->ready_flag)
                 pthread_cond_wait(&storage->ready_cond, &storage->mutex);
 
             t1 = std::chrono::system_clock::now();
@@ -175,7 +175,6 @@ void SinkWorker(StbModulator &_modulator)
         // ---- begin critical section --------------------------------------------------------------------------------
         // Terminate shared state cleanly
         pthread_mutex_lock(&storage->mutex);
-        storage->terminate = true;
         pthread_cond_broadcast(&storage->ready_cond);
         pthread_cond_broadcast(&storage->request_cond);
         pthread_mutex_unlock(&storage->mutex);
