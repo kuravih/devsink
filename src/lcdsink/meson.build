@@ -1,3 +1,5 @@
+threads_dep = dependency('threads')
+zmq_dep = dependency('libzmq', required: true)
 glfw3_dep = dependency('glfw3')
 
 conf = configure_file(
@@ -83,7 +85,7 @@ executable(
         glfw_cxx_inc,
         testbed_inc
     ],
-    dependencies : [glfw3_dep],
+    dependencies : [glfw3_dep, threads_dep, zmq_dep],
     link_whole : [glfw_cxx_lib],
     link_with : [
         glad_lib,
@@ -96,6 +98,5 @@ executable(
         '-Wformat',
         '-O3'
     ],
-    link_args : ['-lpthread', '-lzmq'],
     install : false
 )

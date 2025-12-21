@@ -1,3 +1,5 @@
+threads_dep = dependency('threads')
+zmq_dep = dependency('libzmq', required: true)
 lib_include = include_directories('../lib')
 
 conf = configure_file(
@@ -14,6 +16,7 @@ executable(
     include_directories : [
         lib_include
     ],
+    dependencies : [threads_dep, zmq_dep],
     cpp_args : [
         '-Wall',
         '-Wextra',
@@ -21,6 +24,5 @@ executable(
         '-Wformat',
         '-O3'
     ],
-    link_args : ['-lpthread', '-lzmq'],
     install : false
 )
