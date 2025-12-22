@@ -94,6 +94,8 @@ struct LcdModulator
 
         glViewport(0, 0, LCDSINK_WIDTH, LCDSINK_HEIGHT);
 
+        kato::log::cout << KATO_MAGENTA << "lcdmodulator.h::SinkWorker() - loading vertex shader : " << LCDSINK_SRC_ROOT "/lcdsink/direct.vert" << KATO_RESET << std::endl;
+        kato::log::cout << KATO_MAGENTA << "lcdmodulator.h::SinkWorker() - loading fragment shader : " << LCDSINK_SRC_ROOT "/lcdsink/direct.frag" << KATO_RESET << std::endl;
         pProgram = std::make_shared<gloo::Program>(gloo::Shader(gloo::getFileContents(LCDSINK_SRC_ROOT "/lcdsink/direct.vert"), gloo::Shader::Type::Vertex), gloo::Shader(gloo::getFileContents(LCDSINK_SRC_ROOT "/lcdsink/direct.frag"), gloo::Shader::Type::Fragment));
         pMesh = std::make_shared<gloo::Mesh>(std::vector<gloo::Vertex>(SCREEN_VERTICES), std::vector<GLuint>(SCREEN_INDICES));
         pMesh->LinkPositionToLocation(0);
@@ -233,6 +235,7 @@ void SinkWorker(LcdModulator &_modulator)
 
         // ------------------------------------------------------------------------------------------------------------------
         int width, height, nCh;
+        kato::log::cout << KATO_MAGENTA << "lcdmodulator.h::SinkWorker() - loading background image : " << LCDSINK_SRC_ROOT "/lcdsink/data/grid_gray16_1620_2560.png" << KATO_RESET << std::endl;
         uint16_t *imData = stbi_load_16(LCDSINK_SRC_ROOT "/lcdsink/data/grid_gray16_1620_2560.png", &width, &height, &nCh, 0);
         for (size_t i = 0; i < (size_t)width * height * nCh; ++i)
             _modulator.display_pixels[i] = imData[i];
@@ -249,15 +252,16 @@ void SinkWorker(LcdModulator &_modulator)
         while (busy.load() && !_modulator.window.ShouldClose()) // Main while loop
         {
             t0 = std::chrono::system_clock::now();
-            // ---- begin critical section ----------------------------------------------------------------------------
+
+            // ==== begin critical section ============================================================================
             pthread_mutex_lock(&storage->mutex);
 
-            storage->request_flag = true;
+            storage->request_flag = true; // request frame from storage
             pthread_cond_signal(&storage->request_cond);
 
             _modulator.render_command(pixels);
 
-            while (!storage->ready_flag)
+            while (!storage->ready_flag) // wait for frame ready
                 pthread_cond_wait(&storage->ready_cond, &storage->mutex);
 
             t1 = std::chrono::system_clock::now();
@@ -265,22 +269,22 @@ void SinkWorker(LcdModulator &_modulator)
             storage->lastaccesstime = kato::function::time_point_to_timespec(t1);
             kato::log::cout << KATO_MAGENTA << "lcdmodulator.h::SinkWorker() - framerate = " << std::scientific << std::setprecision(5) << framerate->value.numf << KATO_RESET << std::flush;
 
-            storage->ready_flag = false;
+            storage->ready_flag = false; // frame consumed, mark as not ready
 
             pthread_mutex_unlock(&storage->mutex);
-            // ---- end critical section ------------------------------------------------------------------------------
+            // ==== end critical section ==============================================================================
 
             usleep(1);
             std::cout << "\r\33[2K";
         }
 
-        // ---- begin critical section --------------------------------------------------------------------------------
+        // ==== begin critical section ================================================================================
         // Terminate shared state cleanly
         pthread_mutex_lock(&storage->mutex);
         pthread_cond_broadcast(&storage->ready_cond);
         pthread_cond_broadcast(&storage->request_cond);
         pthread_mutex_unlock(&storage->mutex);
-        // ---- end critical section ----------------------------------------------------------------------------------
+        // ==== end critical section ==================================================================================
 
         _modulator.closeStream();
     }

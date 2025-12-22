@@ -150,13 +150,14 @@ void SinkWorker(StbModulator &_modulator)
         while (busy.load())
         {
             t0 = std::chrono::system_clock::now();
-            // ---- begin critical section ----------------------------------------------------------------------------
+
+            // ==== begin critical section ============================================================================
             pthread_mutex_lock(&storage->mutex);
 
-            storage->request_flag = true;
+            storage->request_flag = true; // request frame from storage
             pthread_cond_signal(&storage->request_cond);
 
-            while (!storage->ready_flag)
+            while (!storage->ready_flag) // wait for frame ready
                 pthread_cond_wait(&storage->ready_cond, &storage->mutex);
 
             t1 = std::chrono::system_clock::now();
@@ -164,21 +165,22 @@ void SinkWorker(StbModulator &_modulator)
             storage->lastaccesstime = kato::function::time_point_to_timespec(t1);
             kato::log::cout << KATO_MAGENTA << "stbmodulator.h::SinkWorker() - framerate = " << std::scientific << std::setprecision(5) << framerate->value.numf << KATO_RESET << std::flush;
 
-            storage->ready_flag = false;
+            storage->ready_flag = false; // frame consumed, mark as not ready
 
             pthread_mutex_unlock(&storage->mutex);
-            // ---- end critical section ------------------------------------------------------------------------------
+            // ==== end critical section ==============================================================================
+
             usleep(1);
             std::cout << "\r\33[2K";
         }
 
-        // ---- begin critical section --------------------------------------------------------------------------------
+        // ==== begin critical section ================================================================================
         // Terminate shared state cleanly
         pthread_mutex_lock(&storage->mutex);
         pthread_cond_broadcast(&storage->ready_cond);
         pthread_cond_broadcast(&storage->request_cond);
         pthread_mutex_unlock(&storage->mutex);
-        // ---- end critical section ----------------------------------------------------------------------------------
+        // ==== end critical section ==================================================================================
 
         kato::log::cout << KATO_MAGENTA << "stbmodulator.h::SinkWorker() - stop ..." << KATO_RESET << std::endl;
 
