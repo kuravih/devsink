@@ -11,14 +11,15 @@ conf = configure_file(
 )
 
 lib_path = '../lib'
-lib_include = include_directories('../lib')
+
+glm_inc = include_directories(lib_path)
 
 glad_path = lib_path + '/glad'
-glad_include = include_directories(glad_path + '/include')
+glad_inc = include_directories(glad_path + '/include')
 glad_lib = static_library(
     'glad',
     sources : glad_path + '/src/glad.c',
-    include_directories : glad_include,
+    include_directories : glad_inc,
     c_args : [
         '-DIMGUI_IMPL_OPENGL_LOADER_GLAD',
         '-Wno-pedantic'
@@ -48,7 +49,6 @@ glfw_cxx_lib = static_library(
 
 gloo_path = lib_path + '/gloo'
 gloo_inc = include_directories(gloo_path + '/include')
-glm_inc = include_directories(lib_path)
 gloo_sources = files(
     gloo_path + '/src/addon.cpp',
     gloo_path + '/src/Camera.cpp',
@@ -67,7 +67,7 @@ gloo_lib = static_library(
     sources : gloo_sources,
     include_directories : [
         gloo_inc,
-        glad_include,
+        glad_inc,
         glm_inc
     ],
     cpp_args : [
@@ -75,28 +75,26 @@ gloo_lib = static_library(
     ]
 )
 
-testbed_inc = include_directories('../lib')
+testbed_inc = include_directories(lib_path)
+
 executable(
     'lcdsink',
     ['lcdsink_main.cpp', conf],
     include_directories : [
-        glad_include,
+        glad_inc,
         gloo_inc,
         glfw_cxx_inc,
         testbed_inc
     ],
-    dependencies : [glfw3_dep, threads_dep, zmq_dep],
-    link_whole : [glfw_cxx_lib],
+    dependencies : [
+        glfw3_dep,
+        threads_dep,
+        zmq_dep
+    ],
+    link_whole : glfw_cxx_lib,
     link_with : [
         glad_lib,
         gloo_lib
-    ],
-    cpp_args : [
-        '-Wall',
-        '-Wextra',
-        '-Wunused',
-        '-Wformat',
-        '-O3'
     ],
     install : false
 )

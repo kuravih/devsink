@@ -268,7 +268,6 @@ void SinkWorker(LcdModulator &_modulator)
             framerate->value.numf = kato::function::delta_time_point_to_framerate(t0, t1);
             storage->lastaccesstime = kato::function::time_point_to_timespec(t1);
             kato::log::cout << KATO_MAGENTA << "lcdmodulator.h::SinkWorker() - framerate = " << std::scientific << std::setprecision(5) << framerate->value.numf << KATO_RESET << std::flush;
-
             storage->ready_flag = false; // frame consumed, mark as not ready
 
             pthread_mutex_unlock(&storage->mutex);

@@ -13,16 +13,10 @@ conf = configure_file(
 executable(
     'stbsink',
     ['stbsink_main.cpp', conf],
-    include_directories : [
-        lib_include
-    ],
-    dependencies : [threads_dep, zmq_dep],
-    cpp_args : [
-        '-Wall',
-        '-Wextra',
-        '-Wunused',
-        '-Wformat',
-        '-O3'
+    include_directories : lib_include,
+    dependencies : [
+        threads_dep, 
+        zmq_dep
     ],
     install : false
 )
