@@ -254,7 +254,7 @@ void SinkWorker(LcdModulator &_modulator)
             t0 = std::chrono::system_clock::now();
 
             // ==== begin critical section ============================================================================
-            shmio::consumer_request_start(storage);
+            shmio::post_request(storage);
 
             _modulator.render_command(pixels);
             t1 = std::chrono::system_clock::now();
@@ -262,7 +262,7 @@ void SinkWorker(LcdModulator &_modulator)
             storage->lastaccesstime = kato::function::time_point_to_timespec(t1);
             kato::log::cout << KATO_MAGENTA << "lcdmodulator.h::SinkWorker() - framerate = " << std::scientific << std::setprecision(5) << framerate->value.numf << KATO_RESET << std::flush;
 
-            shmio::consumer_wait_for_ready(storage);
+            shmio::wait_for_response(storage);
             // ==== end critical section ==============================================================================
 
             std::cout << "\r\33[2K";
@@ -271,8 +271,8 @@ void SinkWorker(LcdModulator &_modulator)
         // ==== begin critical section ================================================================================
         // Terminate shared state cleanly
         pthread_mutex_lock(&storage->mutex);
-        pthread_cond_broadcast(&storage->ready_cond);
-        pthread_cond_broadcast(&storage->request_cond);
+        pthread_cond_broadcast(&storage->has_request_cond);
+        pthread_cond_broadcast(&storage->has_response_cond);
         pthread_mutex_unlock(&storage->mutex);
         // ==== end critical section ==================================================================================
 
