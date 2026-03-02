@@ -3,6 +3,7 @@
 
 #pragma once
 
-#define STBSINK_SRC_ROOT "@SRC_ROOT@"
+#define STBSINK_VER_STR "@VERSION@"
+#define KATO_DIR "@LIB_KATO_DIR@"
 
 #endif // __STBSINK_PATH_DEF_H__

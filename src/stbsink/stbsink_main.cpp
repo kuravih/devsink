@@ -14,7 +14,7 @@ void sigint_handler(int signal)
 
 int main()
 {
-    kato::log::cout << KATO_GREEN << "stbsink_main.cpp::main() Starting " STBSINK_STR " (" STBSINK_VERSION_STR ")" << KATO_RESET << std::endl;
+    kato::log::cout << KATO_GREEN << "stbsink_main.cpp::main() Starting " STBSINK_STR " (" STBSINK_VER_STR ")" << KATO_RESET << std::endl;
 
     std::signal(SIGINT, sigint_handler);
 
@@ -35,7 +35,7 @@ int main()
     listen_thread.join();
     sink_thread.join();
 
-    kato::log::cout << KATO_GREEN << "stbsink_main.cpp::main() Stopping " STBSINK_STR " (" STBSINK_VERSION_STR ")" << KATO_RESET << std::endl;
+    kato::log::cout << KATO_GREEN << "stbsink_main.cpp::main() Stopping " STBSINK_STR " (" STBSINK_VER_STR ")" << KATO_RESET << std::endl;
 
     return 0;
 }

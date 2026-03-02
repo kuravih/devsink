@@ -3,9 +3,10 @@ zmq_dep = dependency('libzmq', required: true)
 glfw3_dep = dependency('glfw3')
 
 conf = configure_file(
-    input: 'lcdsink_path_def.h.in',
-    output: 'lcdsink_path_def.h',
+    input: 'lcdsink_conf_def.h.in',
+    output: 'lcdsink_conf_def.h',
     configuration: {
+        'VERSION': meson.project_version(),
         'SRC_ROOT': meson.project_source_root()
     }
 )

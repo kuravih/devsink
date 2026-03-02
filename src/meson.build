@@ -5,7 +5,8 @@ project('devsink',
         'c_std=c17',
         'warning_level=3',
         'optimization=3'
-    ]
+    ],
+    version: '0.0.1-dev'
 )
 
 subdir('lcdsink')

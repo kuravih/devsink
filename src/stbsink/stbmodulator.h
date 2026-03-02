@@ -9,7 +9,7 @@
 #include "kato/log.hpp"
 #include "link/zmq_link.hpp"
 #include "stbsink_def.h"
-#include "stbsink_path_def.h"
+#include "stbsink_conf_def.h"
 #include "toml11/toml.hpp"
 #include "glm/glm.hpp"
 
@@ -33,7 +33,7 @@ struct StbModulator
     StbModulator(const char *_name, const char *_serial, long _port, const testbed::Point<float> _center, const float _radius) : name(_name), serial(_serial), full({{0, 0}, {640, 480}}), center(_center), max_radius(_radius), radius(_radius), datatype(_DATATYPE_UINT16), port(_port) {}
     int openStream()
     {
-        if (testbed::create_modulator_memory(memory, (serial + "_" STBSINK_STREAM_STR).c_str(), full.size(), center, radius, shmio::DataType::UINT16, serial.c_str(), (std::pow(2, 16) - 1), port) == 0)
+        if (testbed::create_modulator_memory(memory, (serial + "_" STBSINK_STR).c_str(), full.size(), center, radius, shmio::DataType::UINT16, serial.c_str(), (std::pow(2, 16) - 1), port) == 0)
         {
             shm_radius = shmio::find_keyword(memory, "RADIUS");
             shm_radius->value.numf = radius;
@@ -72,7 +72,7 @@ void ListenWorker(StbModulator &_modulator, ZMQLink &_link)
         rxMessage = _link.Receive();
         if (rxMessage.size() > 0)
         {
-            // kato::log::cout << KATO_MAGENTA << "stbmodulator.h::ListenWorker() rxMessage = " << rxMessage << KATO_RESET << std::endl;
+            kato::log::cout << KATO_MAGENTA << "stbmodulator.h::ListenWorker() rxMessage = " << rxMessage << KATO_RESET << std::endl;
 
             toml::value data = toml::parse_str(rxMessage);
             std::string sync = "";
@@ -135,7 +135,8 @@ void SinkWorker(StbModulator &_modulator)
     kato::log::cout << KATO_MAGENTA << "stbmodulator.h::SinkWorker() Source thread starting..." << KATO_RESET << std::endl;
     if (_modulator.openStream() == 0)
     {
-        kato::TrueTypeFont ttf(STBSINK_SRC_ROOT "/lib/kato/ProggyClean.ttf", 12);
+        kato::TrueTypeFont ttf(KATO_DIR "/ProggyClean.ttf", 12);
+
         std::chrono::system_clock::time_point t0, t1;
         shmio::SharedStorage *storage = shmio::get_storage_ptr(_modulator.memory);
         shmio::Keyword *framerate = shmio::find_keyword(_modulator.memory, "FRMRATE");

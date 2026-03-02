@@ -3,10 +3,11 @@ zmq_dep = dependency('libzmq', required: true)
 lib_include = include_directories('../lib')
 
 conf = configure_file(
-    input: 'stbsink_path_def.h.in',
-    output: 'stbsink_path_def.h',
+    input: 'stbsink_conf_def.h.in',
+    output: 'stbsink_conf_def.h',
     configuration: {
-        'SRC_ROOT': meson.project_source_root()
+        'VERSION': meson.project_version(),
+        'LIB_KATO_DIR': join_paths(meson.project_source_root(), 'lib', 'kato')
     }
 )
 

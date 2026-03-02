@@ -20,7 +20,7 @@ static void glfw_error_callback(int error, const char *description)
 int main()
 {
 
-    kato::log::cout << KATO_GREEN << "lcdsink_main.cpp::main() Starting " LCDSINK_STR " (" LCDSINK_VERSION_STR ")" << KATO_RESET << std::endl;
+    kato::log::cout << KATO_GREEN << "lcdsink_main.cpp::main() Starting " LCDSINK_STR " (" LCDSINK_VER_STR ")" << KATO_RESET << std::endl;
 
     glfw::Error::SetErrorCallback(glfw_error_callback);
     std::signal(SIGINT, sigint_handler);
@@ -42,7 +42,7 @@ int main()
     listen_thread.join();
     sink_thread.join();
 
-    kato::log::cout << KATO_GREEN << "lcdsink_main.cpp::main() Stopping " LCDSINK_STR " (" LCDSINK_VERSION_STR ")" << KATO_RESET << std::endl;
+    kato::log::cout << KATO_GREEN << "lcdsink_main.cpp::main() Stopping " LCDSINK_STR " (" LCDSINK_VER_STR ")" << KATO_RESET << std::endl;
 
     return 0;
 }
