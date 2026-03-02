@@ -1,0 +1,9 @@
+#ifndef __LCDSINK_PATH_DEF_H__
+#define __LCDSINK_PATH_DEF_H__
+
+#pragma once
+
+#define LCDSINK_VER_STR "@VERSION@"
+#define LCDSINK_SRC_ROOT "@SRC_ROOT@"
+
+#endif // __LCDSINK_PATH_DEF_H__

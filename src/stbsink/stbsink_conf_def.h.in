@@ -1,0 +1,9 @@
+#ifndef __STBSINK_PATH_DEF_H__
+#define __STBSINK_PATH_DEF_H__
+
+#pragma once
+
+#define STBSINK_VER_STR "@VERSION@"
+#define KATO_DIR "@LIB_KATO_DIR@"
+
+#endif // __STBSINK_PATH_DEF_H__
