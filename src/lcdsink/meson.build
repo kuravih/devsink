@@ -48,33 +48,7 @@ glfw_cxx_lib = static_library(
     include_directories : glfw_cxx_inc
 )
 
-gloo_path = lib_path + '/gloo'
-gloo_inc = include_directories(gloo_path + '/include')
-gloo_sources = files(
-    gloo_path + '/src/addon.cpp',
-    gloo_path + '/src/Camera.cpp',
-    gloo_path + '/src/ElementBufferObject.cpp',
-    gloo_path + '/src/Framebuffer.cpp',
-    gloo_path + '/src/Mesh.cpp',
-    gloo_path + '/src/Program.cpp',
-    gloo_path + '/src/Renderbuffer.cpp',
-    gloo_path + '/src/Shader.cpp',
-    gloo_path + '/src/Texture.cpp',
-    gloo_path + '/src/VertexArrayObject.cpp',
-    gloo_path + '/src/VertexBufferObject.cpp'
-)
-gloo_lib = static_library(
-    'gloo',
-    sources : gloo_sources,
-    include_directories : [
-        gloo_inc,
-        glad_inc,
-        glm_inc
-    ],
-    cpp_args : [
-        '-DGLM_ENABLE_EXPERIMENTAL'
-    ]
-)
+gloo_inc = include_directories(lib_path)
 
 testbed_inc = include_directories(lib_path)
 
@@ -94,8 +68,7 @@ executable(
     ],
     link_whole : glfw_cxx_lib,
     link_with : [
-        glad_lib,
-        gloo_lib
+        glad_lib
     ],
     install : false
 )
