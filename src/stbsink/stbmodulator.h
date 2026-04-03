@@ -72,7 +72,7 @@ void ListenWorker(StbModulator &_modulator, ZMQLink &_link)
         rxMessage = _link.Receive();
         if (rxMessage.size() > 0)
         {
-            kato::log::cout << KATO_MAGENTA << "stbmodulator.h::ListenWorker() rxMessage = " << rxMessage << KATO_RESET << std::endl;
+            // kato::log::cout << KATO_MAGENTA << "stbmodulator.h::ListenWorker() rxMessage = " << rxMessage << KATO_RESET << std::endl;
 
             toml::value data = toml::parse_str(rxMessage);
             std::string sync = "";
@@ -98,7 +98,7 @@ void ListenWorker(StbModulator &_modulator, ZMQLink &_link)
             {
                 int nudge_x = data.at("settings").at("nudge").at("x").as_integer();
                 int nudge_y = data.at("settings").at("nudge").at("y").as_integer();
-                kato::log::cout << KATO_GREEN << "lcdmodulator.h::ListenWorker() nudge center : (" << (int)_modulator.center.x << "," << (int)_modulator.center.y << ") by (" << nudge_x << "," << nudge_y << ")" << KATO_RESET << std::endl;
+                kato::log::cout << KATO_GREEN << "stbmodulator.h::ListenWorker() nudge center : (" << (int)_modulator.center.x << "," << (int)_modulator.center.y << ") by (" << nudge_x << "," << nudge_y << ")" << KATO_RESET << std::endl;
                 _modulator.setCenter({_modulator.center.x + nudge_x, _modulator.center.y + nudge_y});
                 toml::value reply = toml::value{toml::table{{"settings", toml::table{{"center", toml::table{{"x", _modulator.center.x}, {"y", _modulator.center.y}}}}}}};
                 txStream << reply << "\n";
@@ -113,7 +113,7 @@ void ListenWorker(StbModulator &_modulator, ZMQLink &_link)
             try // Settings = "sync"
             {
                 std::string sync = data.at("settings").as_string();
-                kato::log::cout << KATO_GREEN << "lcdmodulator.h::ListenWorker() syncing..." << KATO_RESET << std::endl;
+                kato::log::cout << KATO_MAGENTA << "stbmodulator.h::ListenWorker() syncing..." << KATO_RESET << std::endl;
                 toml::value reply = toml::value{toml::table{{"settings", toml::table{{"radius", _modulator.radius}, {"center", toml::table{{"x", _modulator.center.x}, {"y", _modulator.center.y}}}}}}};
                 txStream << reply << "\n";
                 txMessage = txStream.str();

@@ -105,5 +105,10 @@ devsink/src$ meson compile -C builddir/
 devsink/src$ ./builddir/stbsource/stbsink
 devsink/src$ ./builddir/stbsource/lcdsink
 ```
+You may have to suppress the "Application not responding" dialog in gnome with
+
+```bash
+gsettings set org.gnome.mutter check-alive-timeout 0
+```
 
 [1]: https://en.wikipedia.org/wiki/TOML
