@@ -125,7 +125,7 @@ struct LcdModulator
     }
     int openStream()
     {
-        if (testbed::create_modulator_memory(memory, (serial + "_" LCDSINK_STR).c_str(), full.size(), center, (float)max_radius, shmio::DataType::UINT16, serial.c_str(), (float)(std::pow(2, 16) - 1), port) == 0)
+        if (testbed::create_modulator_memory(memory, (serial + "_" LCDSINK_STR).c_str(), full.size(), center, max_radius, shmio::DataType::UINT16, serial.c_str(), (float)(std::pow(2, 16) - 1), port) == 0)
         {
             shm_radius = shmio::find_keyword(memory, "RADIUS");
             shm_radius->value.numf = (double)radius;

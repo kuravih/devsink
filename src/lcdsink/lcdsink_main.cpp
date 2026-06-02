@@ -28,8 +28,8 @@ int main()
     std::thread listen_thread, sink_thread;
     long port = 8102;
 
-    testbed::Point<float> center = {819, 897};
-    float radius = 180;
+    testbed::Point<float> center = {817, 898};
+    float radius = 160;
     LcdModulator modulator("LCD Modulator", "lcd001", port, center, radius);
 
     ZMQLink link(modulator.port);

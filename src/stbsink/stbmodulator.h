@@ -33,7 +33,7 @@ struct StbModulator
     StbModulator(const char *_name, const char *_serial, long _port, const testbed::Point<float> _center, const float _radius) : name(_name), serial(_serial), full({{0, 0}, {640, 480}}), center(_center), max_radius(_radius), radius(_radius), datatype(_DATATYPE_UINT16), port(_port) {}
     int openStream()
     {
-        if (testbed::create_modulator_memory(memory, (serial + "_" STBSINK_STR).c_str(), full.size(), center, radius, shmio::DataType::UINT16, serial.c_str(), (std::pow(2, 16) - 1), port) == 0)
+        if (testbed::create_modulator_memory(memory, (serial + "_" STBSINK_STR).c_str(), full.size(), center, max_radius, shmio::DataType::UINT16, serial.c_str(), (std::pow(2, 16) - 1), port) == 0)
         {
             shm_radius = shmio::find_keyword(memory, "RADIUS");
             shm_radius->value.numf = radius;

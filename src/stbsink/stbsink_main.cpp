@@ -21,8 +21,8 @@ int main()
     std::thread listen_thread, sink_thread;
     long port = 8101;
 
-    testbed::Point<float> center = {200, 200};
-    float radius = 100;
+    testbed::Point<float> center = {360, 360};
+    float radius = 160;
     StbModulator modulator("STB Modulator", "stb001", port, center, radius);
 
     ZMQLink link(modulator.port);
