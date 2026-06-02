@@ -32,6 +32,7 @@ Example transactions:
 <tr>
 <th>Send</th>
 <th>Receive</th>
+<th>Description</th>
 </tr>
 <tr>
 <td>
@@ -50,6 +51,9 @@ y = 200.0
 x = 200.0
 ```
 </td>
+<td>
+Get settings
+</td>
 </tr>
 <tr>
 <td>
@@ -65,6 +69,9 @@ radius = 100
 [settings]
 radius = 100
 ```
+</td>
+<td>
+Set the Radius
 </td>
 </tr>
 <tr>
@@ -83,6 +90,9 @@ y = 1
 y = 200.0
 x = 201.0
 ```
+</td>
+<td>
+Move the control region vertically or horizontally
 </td>
 </tr>
 
