@@ -32,12 +32,13 @@ Example transactions:
 <tr>
 <th>Send</th>
 <th>Receive</th>
+<th>Description</th>
 </tr>
 <tr>
 <td>
 
 ```toml
-settings= "sync"
+settings = "sync"
 ```
 </td>
 <td>
@@ -50,6 +51,9 @@ y = 200.0
 x = 200.0
 ```
 </td>
+<td>
+Get settings
+</td>
 </tr>
 <tr>
 <td>
@@ -65,6 +69,9 @@ radius = 100
 [settings]
 radius = 100
 ```
+</td>
+<td>
+Set the Radius
 </td>
 </tr>
 <tr>
@@ -84,6 +91,9 @@ y = 200.0
 x = 201.0
 ```
 </td>
+<td>
+Move the control region vertically or horizontally
+</td>
 </tr>
 
 </table> 
@@ -102,8 +112,13 @@ devsink/src$ meson compile -C builddir/
 ```
 #### run
 ```bash
-devsink/src$ ./builddir/stbsource/stbsink
-devsink/src$ ./builddir/stbsource/lcdsink
+devsink/src$ ./builddir/stbsink/stbsink [-p 8101] [-c 360,360] [-r 160]
+devsink/src$ ./builddir/lcdsink/lcdsink [-p 8102] [-c 817,898] [-r 160]
+```
+You may have to suppress the "Application not responding" dialog in gnome with
+
+```bash
+gsettings set org.gnome.mutter check-alive-timeout 0
 ```
 
 [1]: https://en.wikipedia.org/wiki/TOML

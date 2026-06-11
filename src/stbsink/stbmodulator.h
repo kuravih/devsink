@@ -16,6 +16,8 @@
 #include <atomic>
 
 volatile std::atomic<bool> busy{true};
+shmio::SharedStorage *g_storage = nullptr;
+ZMQLink *g_link = nullptr;
 
 // ====================================================================================================================
 struct StbModulator
@@ -33,7 +35,7 @@ struct StbModulator
     StbModulator(const char *_name, const char *_serial, long _port, const testbed::Point<float> _center, const float _radius) : name(_name), serial(_serial), full({{0, 0}, {640, 480}}), center(_center), max_radius(_radius), radius(_radius), datatype(_DATATYPE_UINT16), port(_port) {}
     int openStream()
     {
-        if (testbed::create_modulator_memory(memory, (serial + "_" STBSINK_STR).c_str(), full.size(), center, radius, shmio::DataType::UINT16, serial.c_str(), (std::pow(2, 16) - 1), port) == 0)
+        if (testbed::create_modulator_memory(memory, (serial + "_" STBSINK_STR).c_str(), full.size(), center, max_radius, shmio::DataType::UINT16, serial.c_str(), (std::pow(2, 16) - 1), port) == 0)
         {
             shm_radius = shmio::find_keyword(memory, "RADIUS");
             shm_radius->value.numf = radius;
@@ -72,7 +74,7 @@ void ListenWorker(StbModulator &_modulator, ZMQLink &_link)
         rxMessage = _link.Receive();
         if (rxMessage.size() > 0)
         {
-            kato::log::cout << KATO_MAGENTA << "stbmodulator.h::ListenWorker() rxMessage = " << rxMessage << KATO_RESET << std::endl;
+            // kato::log::cout << KATO_MAGENTA << "stbmodulator.h::ListenWorker() rxMessage = " << rxMessage << KATO_RESET << std::endl;
 
             toml::value data = toml::parse_str(rxMessage);
             std::string sync = "";
@@ -98,7 +100,7 @@ void ListenWorker(StbModulator &_modulator, ZMQLink &_link)
             {
                 int nudge_x = data.at("settings").at("nudge").at("x").as_integer();
                 int nudge_y = data.at("settings").at("nudge").at("y").as_integer();
-                kato::log::cout << KATO_GREEN << "lcdmodulator.h::ListenWorker() nudge center : (" << (int)_modulator.center.x << "," << (int)_modulator.center.y << ") by (" << nudge_x << "," << nudge_y << ")" << KATO_RESET << std::endl;
+                kato::log::cout << KATO_GREEN << "stbmodulator.h::ListenWorker() nudge center : (" << (int)_modulator.center.x << "," << (int)_modulator.center.y << ") by (" << nudge_x << "," << nudge_y << ")" << KATO_RESET << std::endl;
                 _modulator.setCenter({_modulator.center.x + nudge_x, _modulator.center.y + nudge_y});
                 toml::value reply = toml::value{toml::table{{"settings", toml::table{{"center", toml::table{{"x", _modulator.center.x}, {"y", _modulator.center.y}}}}}}};
                 txStream << reply << "\n";
@@ -113,7 +115,7 @@ void ListenWorker(StbModulator &_modulator, ZMQLink &_link)
             try // Settings = "sync"
             {
                 std::string sync = data.at("settings").as_string();
-                kato::log::cout << KATO_GREEN << "lcdmodulator.h::ListenWorker() syncing..." << KATO_RESET << std::endl;
+                kato::log::cout << KATO_MAGENTA << "stbmodulator.h::ListenWorker() syncing..." << KATO_RESET << std::endl;
                 toml::value reply = toml::value{toml::table{{"settings", toml::table{{"radius", _modulator.radius}, {"center", toml::table{{"x", _modulator.center.x}, {"y", _modulator.center.y}}}}}}};
                 txStream << reply << "\n";
                 txMessage = txStream.str();
@@ -139,6 +141,7 @@ void SinkWorker(StbModulator &_modulator)
 
         std::chrono::system_clock::time_point t0, t1;
         shmio::SharedStorage *storage = shmio::get_storage_ptr(_modulator.memory);
+        g_storage = storage;
         shmio::Keyword *framerate = shmio::find_keyword(_modulator.memory, "FRMRATE");
         std::span<uint16_t> pixels = shmio::get_pixels_as<uint16_t>(_modulator.memory);
 

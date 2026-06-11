@@ -42,6 +42,8 @@
 // --------------------------------------------------------------------------------------------------------------------
 
 volatile std::atomic<bool> busy{true};
+shmio::SharedStorage *g_storage = nullptr;
+ZMQLink *g_link = nullptr;
 
 // ====================================================================================================================
 struct LcdModulator
@@ -125,7 +127,7 @@ struct LcdModulator
     }
     int openStream()
     {
-        if (testbed::create_modulator_memory(memory, (serial + "_" LCDSINK_STR).c_str(), full.size(), center, (float)max_radius, shmio::DataType::UINT16, serial.c_str(), (float)(std::pow(2, 16) - 1), port) == 0)
+        if (testbed::create_modulator_memory(memory, (serial + "_" LCDSINK_STR).c_str(), full.size(), center, max_radius, shmio::DataType::UINT16, serial.c_str(), (float)(std::pow(2, 16) - 1), port) == 0)
         {
             shm_radius = shmio::find_keyword(memory, "RADIUS");
             shm_radius->value.numf = (double)radius;
@@ -230,6 +232,7 @@ void SinkWorker(LcdModulator &_modulator)
     {
         std::chrono::system_clock::time_point t0, t1;
         shmio::SharedStorage *storage = shmio::get_storage_ptr(_modulator.memory);
+        g_storage = storage;
         shmio::Keyword *framerate = shmio::find_keyword(_modulator.memory, "FRMRATE");
         std::span<uint16_t> pixels = shmio::get_pixels_as<uint16_t>(_modulator.memory);
 
