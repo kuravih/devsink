@@ -16,6 +16,8 @@
 #include <atomic>
 
 volatile std::atomic<bool> busy{true};
+shmio::SharedStorage *g_storage = nullptr;
+ZMQLink *g_link = nullptr;
 
 // ====================================================================================================================
 struct StbModulator
@@ -139,6 +141,7 @@ void SinkWorker(StbModulator &_modulator)
 
         std::chrono::system_clock::time_point t0, t1;
         shmio::SharedStorage *storage = shmio::get_storage_ptr(_modulator.memory);
+        g_storage = storage;
         shmio::Keyword *framerate = shmio::find_keyword(_modulator.memory, "FRMRATE");
         std::span<uint16_t> pixels = shmio::get_pixels_as<uint16_t>(_modulator.memory);
 

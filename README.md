@@ -38,7 +38,7 @@ Example transactions:
 <td>
 
 ```toml
-settings= "sync"
+settings = "sync"
 ```
 </td>
 <td>
@@ -112,8 +112,8 @@ devsink/src$ meson compile -C builddir/
 ```
 #### run
 ```bash
-devsink/src$ ./builddir/stbsource/stbsink
-devsink/src$ ./builddir/stbsource/lcdsink
+devsink/src$ ./builddir/stbsink/stbsink [-p 8101] [-c 360,360] [-r 160]
+devsink/src$ ./builddir/lcdsink/lcdsink [-p 8102] [-c 817,898] [-r 160]
 ```
 You may have to suppress the "Application not responding" dialog in gnome with
 
