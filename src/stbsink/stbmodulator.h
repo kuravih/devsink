@@ -143,7 +143,7 @@ void SinkWorker(StbModulator &_modulator)
         shmio::SharedStorage *storage = shmio::get_storage_ptr(_modulator.memory);
         g_storage = storage;
         shmio::Keyword *framerate = shmio::find_keyword(_modulator.memory, "FRMRATE");
-        std::span<uint16_t> pixels = shmio::get_pixels_as<uint16_t>(_modulator.memory);
+        // std::span<uint16_t> pixels = shmio::get_pixels_as<uint16_t>(_modulator.memory);
 
         kato::log::cout << KATO_MAGENTA << "  - name : " << _modulator.memory.name << KATO_RESET << std::endl;
         kato::log::cout << KATO_MAGENTA << "  - size : " << _modulator.memory.size << KATO_RESET << std::endl;
