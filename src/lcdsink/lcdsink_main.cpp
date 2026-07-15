@@ -94,11 +94,15 @@ int main(int argc, char *argv[])
                 shmio::Keyword *cx = shmio::find_keyword(prev, "CENTER.X");
                 shmio::Keyword *cy = shmio::find_keyword(prev, "CENTER.Y");
                 if (cx && cy)
-                    center = {cx->value.numf, cy->value.numf};
+                    center = {(float)cx->value.numf, (float)cy->value.numf};
             }
             shmio::close_shared_memory(prev);
         }
     }
+
+    kato::log::cout << KATO_GREEN << "lcdsink_main.cpp::main() port = " << port << KATO_RESET << std::endl;
+    kato::log::cout << KATO_GREEN << "lcdsink_main.cpp::main() radius = " << radius << KATO_RESET << std::endl;
+    kato::log::cout << KATO_GREEN << "lcdsink_main.cpp::main() center = (" << center.x << "," << center.y << ")" << KATO_RESET << std::endl;
 
     LcdModulator modulator("LCD Modulator", serial.c_str(), port, center, radius);
 
