@@ -1,6 +1,3 @@
-#ifndef __STBMODULATOR_H__
-#define __STBMODULATOR_H__
-
 #pragma once
 
 #include "testbed/common.hpp"
@@ -184,5 +181,3 @@ void SinkWorker(StbModulator &_modulator)
     kato::log::cout << KATO_MAGENTA << "stbmodulator.h::SinkWorker() Source thread stopping..." << KATO_RESET << std::endl;
 }
 // ====================================================================================================================
-
-#endif //__STBMODULATOR_H__

@@ -1,6 +1,3 @@
-#ifndef __LCDSINK_DEF_H__
-#define __LCDSINK_DEF_H__
-
 #pragma once
 
 #define LCDSINK_STR "lcdsink"
@@ -10,5 +7,3 @@
 
 #define LCDSINK_WIDTH 540
 #define LCDSINK_HEIGHT 2560
-
-#endif //__LCDSINK_DEF_H__

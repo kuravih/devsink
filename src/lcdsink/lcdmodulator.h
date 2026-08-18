@@ -1,6 +1,3 @@
-#ifndef __LCDMODULATOR_H__
-#define __LCDMODULATOR_H__
-
 #pragma once
 
 #include "testbed/common.hpp"
@@ -19,12 +16,13 @@
 #define STB_IMAGE_IMPLEMENTATION
 #include "stb/stb_image.h"
 
+#include "glfw-cxx/Window.hpp"
+#include "glfw-cxx/Error.hpp"
+#include "glfw-cxx/Context.hpp"
+
 #include "gloo/Texture.h"
 #include "gloo/Program.h"
 #include "gloo/Mesh.h"
-#include "glad/glad.h"
-#include "glfw-cxx/Window.hpp"
-#include "glfw-cxx/Error.hpp"
 
 // ---- screen vertices -----------------------------------------------------------------------------------------------
 #define SCREEN_VERTICES                                                                                       \
@@ -67,9 +65,9 @@ struct LcdModulator
     LcdModulator(const char *_name, const char *_serial, long _port, const testbed::Point<float> _center, const float _radius) : name(_name), serial(_serial), full({{0, 0}, {3 * LCDSINK_WIDTH, LCDSINK_HEIGHT}}), center(_center), max_radius(_radius), radius(_radius), datatype(_DATATYPE_UINT16), port(_port), display_pixels(3 * LCDSINK_WIDTH * LCDSINK_HEIGHT) {}
     void setup()
     {
-        window.Hint(GLFW_CONTEXT_VERSION_MAJOR, 3);
-        window.Hint(GLFW_CONTEXT_VERSION_MINOR, 3);
-        window.Hint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+        glfw::Window::Hint(GLFW_CONTEXT_VERSION_MAJOR, 3);
+        glfw::Window::Hint(GLFW_CONTEXT_VERSION_MINOR, 3);
+        glfw::Window::Hint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
         std::list<glfw::Monitor> monitors = glfw::Monitor::GetMonitors();
 
@@ -92,7 +90,7 @@ struct LcdModulator
 
         window.MakeContextCurrent();
 
-        gladLoadGL();
+        glfw::Context::SwapInterval(1);
 
         glViewport(0, 0, LCDSINK_WIDTH, LCDSINK_HEIGHT);
 
@@ -284,5 +282,3 @@ void SinkWorker(LcdModulator &_modulator)
     kato::log::cout << KATO_MAGENTA << "lcdmodulator.h::SinkWorker() Source thread stopping..." << KATO_RESET << std::endl;
 }
 // ====================================================================================================================
-
-#endif //__LCDMODULATOR_H__

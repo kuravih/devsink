@@ -7,17 +7,14 @@ conf = configure_file(
     output: 'stbsink_conf_def.h',
     configuration: {
         'VERSION': meson.project_version(),
-        'LIB_KATO_DIR': join_paths(meson.project_source_root(), 'lib', 'kato')
-    }
+        'LIB_KATO_DIR': join_paths(meson.project_source_root(), 'lib', 'kato'),
+    },
 )
 
 executable(
     'stbsink',
     ['stbsink_main.cpp', conf],
-    include_directories : lib_include,
-    dependencies : [
-        threads_dep, 
-        zmq_dep
-    ],
-    install : false
+    include_directories: lib_include,
+    dependencies: [threads_dep, zmq_dep],
+    install: false,
 )
